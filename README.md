@@ -92,102 +92,178 @@
 
 </br>
 
-## 5. 디버깅
+## 5. 에러 핸들링
 
-### 5-1. Modal 관련 디버깅
+### 5-1. Modal 관련 
 <details>
-<summary>create-react-app 사용시 문제</summary>
+<summary>git clone 후 npm error</summary>
+<div markdown="1">
+
+* 네가지 기능중 모달을 처음으로 만들었고, 시작을 위해서 git clone을 해온 뒤 서버모드를 열려하니   
+  계속 npm error가 뜨면서 경로를 찾을 수 없다고 나옴
+* 이전에 리액트로 개인 프로젝트를 만들 때는 한번도 보지 못한 에러라 git clone npm error로 계속 구글링함   
+* 구글링 + 에러 문구 다시 찬찬히 읽어보며 파악한 것인데, wanted_pre_onboarding 이라는 폴더 아래에   
+  custom-component라는 폴더가 하나 더 있기 때문에 이 폴더에서 작업을 해야하는데   
+  wanted_pre_onboarding 위치에서 npm 명령을 치니 경로 에러가 났음
+* 경로 수정 후 정상 작동함
+
+</details>
+
+</br>
+
+<details>
+<summary>Open Modal 버튼 형태는 남고 글자만 사라지는 문제</summary>
+<div markdown="1">
+
+* 처음에 button 태그로 Open Modal 버튼을 만들지 않고 div를 버튼처럼 사용하려 했더니   
+  삼항연산자로 class 붙였다 뗐다 할 때 버튼 형태는 남고 글자만 사라지게 작동됨   
+* div 내에 button태그로 분리하고 button 태그에만 삼항연산자 붙이니 정상 작동함
+
+</details>
+  
+</br>
+
+<details>
+<summary>class에 삼항연산자 사용시 문제</summary>
 <div markdown="1">
 
 ```
-You are running `create-react-app` 4.0.3, which is behind the latest release 
-
-(5.0.0).
-
-We no longer support global installation of Create React App.
+<div className={'modal-button' + (setModal(true)?' hidden':"")}
 ```
-
-* 버전으로 인한 문제 생김. 재설치한뒤 npx 빼고 사용하니 되었음
-
-</details>
-
-</br>
-
-<details>
-<summary>svg 아이콘 입력시 네임스페이스 속성이 지원되지 않는 상황</summary>
-<div markdown="1">
-
-* xmlns:xlink -> xmlnsXlink 처럼 JSX와 호환되도록 구문 변환 적용하니 해결
-
-</details>
-  
-</br>
-
-<details>
-<summary>span 관련 css 문제</summary>
-<div markdown="1">
-
-* span으로 묶여있는 New(N) 버튼 w와 h가 안 먹어서 고민   
-* span은 inline 이라서 안 먹혔던 것. inline-block으로 바꾸니 해결   
-
-</details>
-  
-</br>
-
-<details>
-<summary>조금 어이 없는 실수</summary>
-<div markdown="1">
-
-* 캐러셀 슬라이드가 하나씩 나와야하는데 한꺼번에 나온 뒤 5초 후   
-동시에 사라지는 현상이 발생.. css 계속 고쳐봤으나 해결이 안되어서   
-첫줄부터 반복해서 확인함   
-
-* 알고보니 carousel-conten'n't 로 클래스 네임 주고.. css엔 content로..   
-스펠링 실수로 css가 전혀 안 먹혀서 발생한 문제.. 고치니 바로 작동함   
-  
-</details>
-
-</br>
-
-<details>
-<summary>useInterval 작동하며 슬라이드가 밀리는 문제</summary>
-<div markdown="1">
-
-* slide에 margin을 줬을 때, 슬라이드가 넘어가면서 점점 한쪽으로 치우치는 문제   
-슬라이드가 교체되면서 margin이 점점 늘어나서 생긴 문제인듯 보임   
-slide가 아닌 carousel-content에 margin을 줘서 해결
-
-</details>
-  
-</br>
-
-<details>
-<summary>netlify 배포 관련</summary>
-<div markdown="1">
-
-* gh-pages로 먼저 배포해보고, 이후 netlify로 배포하고자 했을 때 build.command   
-부분 에러가 계속 발생   
+* setModal에 따라가 아니라 modal 상태에 따라 true/false로 태그 붙여야함   
+  아래와 같이 수정하여 해결
 
 ```
-npm install netlify-cli -g   
-netlify deploy
+<button className={`modal-button ${modal?'hidden':''}`}
 ```
-로 해결
+
+</details>
   
-* 이 후 배포는 되었다고 떴지만 화면에 아무 것도 안 뜨는 문제   
-homepage 링크가 github으로 되어있어서 netlify url로 다시 설정 후 배포
+</br>
+
+### 5-2. Tab 관련 에러 핸들링
+<details>
+<summary>리액트 부트스트랩 사용시 디자인 적용 제대로 안되는 문제</summary>
+<div markdown="1">
+
+* import 'bootstrap/dist/css/bootstrap.css'; 생략해서 생김
+* index.js에 추가하여 해결
+  
+</details>
+
+</br>
+
+<details>
+<summary>return 관련 에러</summary>
+<div markdown="1">
+
+* TabContents 컴포넌트에 return()으로 묶고 그 안에 if문별로 return 쓰려하니 오류
+* 최상단의 return 빼서 해결
+
+</details>
+  
+</br>
+
+<details>
+<summary>if문에서 Missing semicolon 오류</summary>
+<div markdown="1">
+
+* 아무리 봐도 semicolon 문제는 없어 보여서 계속 찾았는데, else if 띄어쓰기함으로   
+  오류 해결
+
+</details>
+  
+</br>
+
+### 5-3. Toggle 관련 에러 핸들링
+<details>
+<summary>css transition 속성이 안 먹히는 문제</summary>
+<div markdown="1">
+
+* <Toggle /> 안에 <ToggleButton /> 컴포넌트를 중첩시켜서 props를 전달하려하니
+배경색 변경은 되는데 ball transition이 제대로 안 먹힘
+* 상세한 원인은 찾지 못했으나 컴포넌트 중첩하지않고 하나로 통일시키니 해결됨
+  
+</details>
+
+</br>
+
+<details>
+<summary>ontoggle과 toggleOn 혼동</summary>
+<div markdown="1">
+
+* ontoggle은 useState 변수이고, toggleOn은 함수인데 이름이 비슷해서 잘못 사용함   
+* 첫줄부터 다시 보면서 변수 / 함수 다시 정리하여 해결함
+
+</details>
+  
+</br>
+
+### 5-4. Click To Edit 관련 에러 핸들링
+<details>
+<summary>props 전달 문제</summary>
+<div markdown="1">
+
+```
+  { name, age, handleValueChange }) => {
+
+    const { name, age, handleValueChange } = props;
+```
+  
+* 위와 같이 선언하여 props 전달이 제대로 안 됨
+* const ~ = props를 쓸 경우 윗줄에는 props로 받아오면됨
+  
+</details>
+
+</br>
+
+<details>
+<summary>변수명 정리</summary>
+<div markdown="1">
+
+* value 관련 비슷한 변수 많아서 헷갈림   
+  newValue(새로 받아온 값)와 values(name과 age 묶음)로 바꾸고   
+  같은 양식에 데이터만 다르게 넣을것이니 name과 age를 values로 묶어서 전달
+
+</details>
+
+</br>
+
+<details>
+<summary>클릭시 input창이 안뜨는 문제</summary>
+<div markdown="1">
+
+* 클릭시 input으로 변경되어야하는데 값이 하드코딩되어 나타남
+* setEditing을 true로 만들어주는 함수가 없어서 생긴 문제
+  
+```
+  const handleClick = () => {
+        setEditing(true);
+    }
+```
+
+* 위와 같은 함수 추가하여 onClick에 달아줘서 해결
+
+</details>
+
+</br>
+
+<details>
+<summary>inputbox 테두리가 이중으로 지저분하게 나타나는 문제</summary>
+<div markdown="1">
+
+* inputbox 테두리가 기본 검정색과 새로 지정한 색상이 이중으로 나타나며 지저분해짐
+* outline 0 줘서 해결
 
 </details>
 
 
 ## 5. 회고 / 느낀점
-> 원티드 선발 과제를 위한 클론 코딩이었는데, 리액트로 프로젝트를 만들어본적은 있지만   
-  반응형으로 만들어본건 처음이라 (리액트) 아쉬움이 많았다.   
-  JS에 비해 아직 리액트는 덜 익숙하다보니 모바일 퍼스트로 구현하지않고 데스크탑 기준으로   
-  먼저 만든 후에 모바일 버전을 다시 추가하려하니 번거로움이 있었다.   
-  그리고 기존에는 gh-pages로만 거의 배포를 하다가 netlify로 하다보니 조금은 시간이 걸렸다.   
-  그래도 계속 사용하다보니 리액트 Hooks나 배포 등에 조금씩 익숙해지는 느낌인데   
-  더 공부하며 연습해야겠다!
+> 지난번 원티드 선발 과제에 이어 두번째 과제 도전이었는데, 지난번보다는 수월했던 것 같다   
+  리액트 컴포넌트중 핵심적인 기능을 만들어보면서 큰 틀에서 조금씩 변화를 주면서   
+  다양한 기능을 더 만들 수 있겠다는 생각을 했다   
+  리액트를 공부할수록 상태 변화 및 관리에 리액트가 아주 유용하다는 생각이 드는데   
+  앞으로도 더 공부하고싶다
 
 
 
